@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Miscellaneous Tools Suite</title>
+    <meta name="description" content="A huge collection of miscellaneous free online tools: Meme Generator, Resume Builder, Calculators, Random Generators, and much more.">
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        /* --- Modern UI Styles --- */
+        :root {
+            --primary-color: #fd7e14; /* Creative Orange */
+            --bg-color: #f4f7fc;
+            --card-bg-color: #ffffff;
+            --text-color: #343a40;
+            --text-secondary: #6c757d;
+            --border-color: #eef2f9;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-radius: 1.5rem;
+            --button-radius: 50px;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; }
+
+        /* Main Layout & Ads */
+        .main-header { background-color: transparent; padding-top: 1.5rem; padding-bottom: 1rem; }
+        .main-footer { background-color: var(--card-bg-color); border-top: 1px solid var(--border-color); }
+        .ad-placeholder { background-color: #eef2f9; border: 2px dashed #d6dce6; display: flex; align-items: center; justify-content: center; text-align: center; color: #98a5b9; font-weight: 500; border-radius: 1rem; }
+        .ad-leaderboard, .ad-footer { min-height: 90px; }
+        .ad-sidebar { min-height: 600px; background-color: var(--card-bg-color); }
+        .ad-in-content { min-height: 250px; }
+
+        /* Navigation & Tool Cards */
+        #tools-nav-container .card { background-color: transparent; border: none; box-shadow: none; }
+        .nav-pills .nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: var(--text-secondary); font-weight: 500; transition: all 0.2s ease-in-out; }
+        .nav-pills .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+        .nav-pills .nav-link:hover { background-color: var(--border-color); color: var(--primary-color); }
+        .nav-pills .nav-link.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.4); }
+        .tool-container.card { display: none; background-color: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+        .tool-container.card.active { display: block; }
+        .tool-container .card-header { background-color: var(--card-bg-color); border-bottom: 1px solid var(--border-color); padding: 1.5rem; border-top-left-radius: var(--card-radius); border-top-right-radius: var(--card-radius); }
+        .tool-container .card-body { padding: 1.5rem; }
+        
+        .form-control, .form-select { border-radius: 12px; padding: 12px 16px; border: 1px solid var(--border-color); background-color: var(--bg-color); transition: all 0.2s ease; }
+        .form-control:focus, .form-select:focus { background-color: white; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2); }
+        .btn { border-radius: var(--button-radius); font-weight: 600; padding: 12px 24px; transition: all 0.2s ease; }
+        .result-box { background-color: var(--bg-color); padding: 1.5rem; border-radius: 1rem; text-align: center; }
+        
+        /* Specific Tool Styles */
+        #meme-canvas { max-width: 100%; border-radius: 1rem; }
+        #coin.flip { animation: flip 0.5s linear; }
+        @keyframes flip { 0% { transform: rotateY(0); } 100% { transform: rotateY(180deg); } }
+        #dice { transition: transform 0.5s ease-out; }
+
+        @media (max-width: 991.98px) { #tools-nav-container .nav-pills { display: flex; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 1.5rem; scrollbar-width: none; } #tools-nav-container .nav-pills::-webkit-scrollbar { display: none; } .nav-pills .nav-link { white-space: nowrap; } }
+    </style>
+</head>
+<body>
+
+    <header class="main-header"><div class="container text-center"><h1 class="display-5 fw-bold">Miscellaneous Tools Suite</h1><p class="lead text-secondary">A wide variety of useful and fun tools for everyday tasks.</p></div></header>
+
+    <main class="container-fluid px-lg-5 my-4">
+        <div class="ad-placeholder ad-leaderboard mb-5 mx-auto" style="max-width: 728px;">Top Banner Ad (728x90)</div>
+        <div class="row g-4">
+            <div class="col-lg-3" id="tools-nav-container">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                         <!-- Initial Loading State -->
+                         <div id="loading-spinner" class="p-4 text-center"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" id="tool-cards-container">
+                 <!-- Tool Cards will be dynamically inserted here -->
+            </div>
+
+            <div class="col-lg-3">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="ad-placeholder ad-sidebar">Vertical Ad <br> (300x600)</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer mt-auto text-center p-4"><div class="container"><div class="ad-placeholder ad-footer mb-4 mx-auto" style="max-width: 728px;">Footer Ad (728x90)</div><p class="text-secondary">© 2024 Modern Tools Suite. All Rights Reserved.</p></div></footer>
+
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- The Master Application Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // --- ROBUST INITIALIZATION ---
+        // This checks if the required external libraries are loaded before starting the app.
+        const requiredLibs = ['JsBarcode', 'jspdf'];
+        let readyCheck = setInterval(() => {
+            const allLoaded = requiredLibs.every(lib => window[lib]);
+            if (allLoaded) {
+                clearInterval(readyCheck);
+                initializeApp();
+            }
+        }, 100);
+
+        // Failsafe: If libs don't load after 5 seconds, show an error.
+        setTimeout(() => {
+            clearInterval(readyCheck);
+            if (!window.jspdf || !window.JsBarcode) {
+                document.getElementById('v-pills-tab').innerHTML = '<p class="p-3 text-danger">Error: Could not load required tool libraries. Please check your connection and refresh the page.</p>';
+            }
+        }, 5000);
+
+        // This is the main function that runs only when everything is ready.
+        function initializeApp() {
+        
+            // --- DATA-DRIVEN ENGINE: Defines all tools in a single, clean object ---
+            const toolData = [
+                { id: 'barcode', icon: 'upc-scan', name: 'Barcode Generator', content: `<p class="text-secondary">Enter text to generate a Code128 barcode.</p><input type="text" id="barcode-input" class="form-control" placeholder="Enter text or numbers"><div class="text-center mt-4"><svg id="barcode-output"></svg></div>` },
+                { id: 'meme', icon: 'emoji-smile-fill', name: 'Meme Generator', content: `<p class="text-secondary">Upload an image, add text, and download your meme.</p><input type="file" id="meme-img-input" class="form-control" accept="image/*"><div class="row g-3 mt-2"><div class="col"><input type="text" id="meme-top-text" class="form-control" placeholder="Top Text"></div><div class="col"><input type="text" id="meme-bottom-text" class="form-control" placeholder="Bottom Text"></div></div><div class="text-center mt-3"><canvas id="meme-canvas"></canvas></div><button id="meme-download-btn" class="btn btn-primary mt-3">Download Meme</button>` },
+                { id: 'resume', icon: 'file-earmark-person', name: 'Resume Builder (PDF)', content: `<p class="text-secondary">Fill out the fields to generate a professional PDF resume.</p><div class="row g-3"><div class="col-md-6"><label class="form-label">Full Name</label><input type="text" id="resume-name" class="form-control" value="John Doe"></div><div class="col-md-6"><label class="form-label">Email</label><input type="email" id="resume-email" class="form-control" value="john.doe@example.com"></div><div class="col-md-6"><label class="form-label">Phone</label><input type="tel" id="resume-phone" class="form-control" value="123-456-7890"></div><div class="col-md-6"><label class="form-label">Address</label><input type="text" id="resume-address" class="form-control" value="123 Main St, Anytown, USA"></div><div class="col-12"><label class="form-label">Professional Summary</label><textarea id="resume-summary" class="form-control" rows="3">A highly motivated professional...</textarea></div><div class="col-12"><label class="form-label">Experience (one per line)</label><textarea id="resume-exp" class="form-control" rows="3" placeholder="Job Title at Company (Year-Year)">Web Developer at Tech Corp (2020-Present)</textarea></div><div class="col-12"><label class="form-label">Education</label><textarea id="resume-edu" class="form-control" rows="2" placeholder="Degree from University (Year)">B.S. in Computer Science from University of Example (2020)</textarea></div></div><button id="resume-generate-btn" class="btn btn-primary w-100 mt-4">Generate & Download PDF</button>` },
+                { id: 'invoice', icon: 'receipt', name: 'Invoice Generator (PDF)', content: `<p class="text-secondary">Create a simple PDF invoice for your business.</p><div class="row g-3"><div class="col-md-6"><label>Your Company</label><input type="text" id="inv-from" class="form-control" value="My Awesome Co."></div><div class="col-md-6"><label>Client Name</label><input type="text" id="inv-to" class="form-control" value="A Great Client"></div><div class="col-12"><label>Items (Item,Qty,Price per line)</label><textarea id="inv-items" class="form-control" rows="4" placeholder="Web Design,1,500
+Logo,2,150">Web Design,1,500
+Logo,2,150</textarea></div></div><button id="inv-generate-btn" class="btn btn-primary w-100 mt-4">Generate & Download PDF</button>` },
+                { id: 'business-name', icon: 'lightbulb', name: 'Business Name Generator', content: `<p class="text-secondary">Enter a keyword to generate creative business names.</p><input type="text" id="bname-keyword" class="form-control" placeholder="e.g., tech, coffee, design" value="Creative"><button id="bname-generate-btn" class="btn btn-primary w-100 mt-3">Generate Names</button><div id="bname-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'lottery', icon: 'ticket-perforated', name: 'Lottery Number Generator', content: `<p class="text-secondary">Generate random numbers for your lottery tickets.</p><div class="row g-3"><div class="col"><label>Numbers</label><input type="number" id="lottery-count" class="form-control" value="6"></div><div class="col"><label>Max Value</label><input type="number" id="lottery-max" class="form-control" value="49"></div></div><button id="lottery-generate-btn" class="btn btn-primary w-100 mt-3">Generate</button><div id="lottery-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'coin-flip', icon: 'coin', name: 'Flip a Coin', content: `<p class="text-secondary">Click the coin to flip it!</p><div id="coin-container" class="my-4" style="cursor: pointer;"><img id="coin" src="https://via.placeholder.com/150?text=Heads" alt="Coin" width="150" height="150" class="rounded-circle"></div><h3 id="coin-output" class="text-center">Heads</h3>` },
+                { id: 'random-number', icon: 'shuffle', name: 'Random Number Generator', content: `<p class="text-secondary">Generate a random number in a range you define.</p><div class="row g-3"><div class="col"><label>Min</label><input type="number" id="rand-min" class="form-control" value="1"></div><div class="col"><label>Max</label><input type="number" id="rand-max" class="form-control" value="100"></div></div><button id="rand-generate-btn" class="btn btn-primary w-100 mt-3">Generate</button><div id="rand-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'dice-roller', icon: 'dice-5', name: 'Dice Roller', content: `<p class="text-secondary">Click the die to roll it.</p><div id="dice-container" class="my-4" style="cursor: pointer;"><i id="dice" class="bi bi-dice-1-fill" style="font-size: 100px; color: var(--primary-color);"></i></div><h3 id="dice-output" class="text-center">You rolled a 1</h3>` },
+                { id: 'planner', icon: 'calendar-check', name: 'Daily Planner Creator', content: `<p class="text-secondary">Add tasks to create a simple, printable daily planner.</p><div class="input-group"><input type="text" id="planner-task" class="form-control" placeholder="Enter a new task..."><button class="btn btn-primary" id="planner-add-btn">Add</button></div><ul id="planner-list" class="list-group mt-3"></ul><button class="btn btn-secondary w-100 mt-3" id="planner-print-btn">Print Planner</button>` },
+                { id: 'invitation', icon: 'envelope-heart', name: 'Invitation Generator', content: `<p class="text-secondary">Fill in the details to create a simple invitation.</p><div class="row g-3"><div class="col-md-6"><label>Couple's Names</label><input type="text" id="invite-names" class="form-control" value="Alex & Jamie"></div><div class="col-md-6"><label>Date & Time</label><input type="text" id="invite-datetime" class="form-control" value="Saturday, June 15th, 2024 at 4 PM"></div><div class="col-12"><label>Venue</label><input type="text" id="invite-venue" class="form-control" value="The Grand Garden Estate"></div></div><button id="invite-generate-btn" class="btn btn-primary w-100 mt-3">Generate & Print</button><div id="invite-output" class="d-none mt-4 p-4 border rounded-3 text-center" style="font-family: 'Garamond', serif;"></div>` },
+                { id: 'story-plot', icon: 'book', name: 'Story Plot Generator', content: `<p class="text-secondary">Get a random plot idea for your next story.</p><button id="plot-generate-btn" class="btn btn-primary w-100">Generate Plot</button><div id="plot-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'ip-tracker', icon: 'geo-alt', name: 'What\'s My IP?', content: `<p class="text-secondary">Find your public IP address.</p><button id="ip-find-btn" class="btn btn-primary w-100">Find My IP Address</button><div id="ip-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'fake-address', icon: 'person-badge', name: 'Fake Address Generator', content: `<p class="text-secondary">Generate a random US address for testing purposes.</p><button id="fake-addr-btn" class="btn btn-primary w-100">Generate Address</button><div id="fake-addr-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'electric-bill', icon: 'lightning-charge', name: 'Electric Bill Calculator', content: `<p class="text-secondary">Estimate your electricity bill based on consumption and rate.</p><div class="row g-3"><div class="col"><label>Consumption (kWh)</label><input type="number" id="elec-kwh" class="form-control"></div><div class="col"><label>Rate ($/kWh)</label><input type="number" id="elec-rate" class="form-control" step="0.01"></div></div><button id="elec-calc-btn" class="btn btn-primary w-100 mt-3">Calculate Bill</button><div id="elec-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'leap-year', icon: 'calendar3-event', name: 'Leap Year Checker', content: `<p class="text-secondary">Check if a year is a leap year.</p><input type="number" id="leap-year" class="form-control" placeholder="Enter a year (e.g., 2024)"><button id="leap-check-btn" class="btn btn-primary w-100 mt-3">Check Year</button><div id="leap-output" class="result-box mt-4 d-none"></div>` },
+                { id: 'numerology', icon: 'gem', name: 'Name Numerology', content: `<p class="text-secondary">Find the numerology number of a name.</p><input type="text" id="num-name" class="form-control" placeholder="Enter a full name"><button id="num-calc-btn" class="btn btn-primary w-100 mt-3">Calculate</button><div id="num-output" class="result-box mt-4 d-none"></div>` },
+            ];
+            
+            // --- STEP 1: Dynamically build the page ---
+            function buildPage() {
+                const navContainer = document.getElementById('v-pills-tab');
+                const cardsContainer = document.getElementById('tool-cards-container');
+                navContainer.innerHTML = ''; 
+                cardsContainer.innerHTML = '';
+
+                toolData.forEach((tool, index) => {
+                    const navLink = document.createElement('button');
+                    navLink.className = `nav-link text-start ${index === 0 ? 'active' : ''}`;
+                    navLink.dataset.tool = `tool-${tool.id}`;
+                    navLink.innerHTML = `<i class="bi bi-${tool.icon}"></i><span>${tool.name}</span>`;
+                    navContainer.appendChild(navLink);
+
+                    const cardDiv = document.createElement('div');
+                    cardDiv.id = `tool-${tool.id}`;
+                    cardDiv.className = `tool-container card ${index === 0 ? 'active' : ''}`;
+                    cardDiv.innerHTML = `<div class="card-header"><h3>${tool.name}</h3></div><div class="card-body">${tool.content}</div>`;
+                    cardsContainer.appendChild(cardDiv);
+                });
+            }
+            
+            // --- STEP 2: Attach all event listeners after the page is built ---
+            function attachAllEventListeners() {
+                const { jsPDF } = window.jspdf;
+
+                document.querySelectorAll('.nav-link').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tool-container').forEach(c => c.classList.remove('active'));
+                        button.classList.add('active');
+                        document.getElementById(button.dataset.tool).classList.add('active');
+                    });
+                });
+                
+                const showResult = (containerId, content) => { const el = document.getElementById(containerId); if(el) { el.innerHTML = content; el.classList.remove('d-none'); } };
+                const randItem = arr => arr[Math.floor(Math.random() * arr.length)];
+                
+                // Tool-specific logic
+
+document.getElementById('barcode-input').addEventListener('input', e => {
+    const value = e.target.value,
+        container = document.getElementById('barcode-output');
+
+    if (value) {
+        try {
+            JsBarcode(container, value, {
+                format: "CODE128",
+                displayValue: true,
+                font: "Poppins"
+            });
+        } catch (error) {
+            container.innerHTML = `<span class="text-danger small">Invalid barcode data</span>`;
+        }
+    } else {
+        container.innerHTML = '';
+    }
+});
+
+const memeCanvas = document.getElementById('meme-canvas'),
+    ctx = memeCanvas.getContext('2d');
+const topText = document.getElementById('meme-top-text'),
+    bottomText = document.getElementById('meme-bottom-text');
+
+let memeImg = new Image();
+memeImg.crossOrigin = "anonymous";
+memeImg.onload = () => drawMeme();
+
+document.getElementById('meme-img-input').addEventListener('change', e => {
+    if (e.target.files[0]) memeImg.src = URL.createObjectURL(e.target.files[0]);
+});
+
+[topText, bottomText].forEach(el =>
+    el.addEventListener('input', () =>
+        drawMeme()));
+
+function drawMeme() {
+    if (!memeImg.complete || memeImg.naturalWidth === 0) return;
+    memeCanvas.width = memeImg.width;
+    memeCanvas.height = memeImg.height;
+    ctx.drawImage(memeImg, 0, 0);
+
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = memeCanvas.width * 0.005;
+    ctx.font = `bold ${memeCanvas.width * 0.1}px Impact`;
+    ctx.textAlign = 'center';
+
+    ctx.fillText(topText.value.toUpperCase(),
+        memeCanvas.width / 2, memeCanvas.height * 0.15);
+    ctx.strokeText(topText.value.toUpperCase(),
+        memeCanvas.width / 2,
+        memeCanvas.height * 0.15);
+
+    ctx.fillText(bottomText.value.toUpperCase(),
+        memeCanvas.width / 2,
+        memeCanvas.height * 0.95);
+    ctx.strokeText(bottomText.value.toUpperCase(),
+        memeCanvas.width / 2,
+        memeCanvas.height * 0.95);
+   document.getElementById('meme-download-btn').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = memeCanvas.toDataURL();
+    a.download = "meme.png";
+    a.click();
+});
+memeImg.src = 'https://i.imgflip.com/1bij.jpg';
+
+document.getElementById('resume-generate-btn').addEventListener('click', () => {
+    const doc = new jsPDF();
+    doc.setFontSize(22).text(document.getElementById('resume-name').value, 20, 20);
+    doc.setFontSize(12).text(`${document.getElementById('resume-email').value} | ${document.getElementById('resume-phone').value} | ${document.getElementById('resume-address').value}`, 20, 30);
+    doc.setFontSize(16).text('Summary', 20, 45);
+    doc.setFontSize(11).text(document.getElementById('resume-summary').value, 20, 52, {
+        maxWidth: 170
+    });
+    doc.setFontSize(16).text('Experience', 20, 80);
+    doc.setFontSize(11).text(document.getElementById('resume-exp').value, 20, 87, {
+        maxWidth: 170
+    });
+    doc.setFontSize(16).text('Education', 20, 130);
+    doc.setFontSize(11).text(document.getElementById('resume-edu').value, 20, 137, {
+        maxWidth: 170
+    });
+    doc.save('resume.pdf');
+});
+
+
+document.getElementById('inv-generate-btn').addEventListener('click', () => {
+    const doc = new jsPDF();
+    let y = 20;
+    total = 0;
+    doc.setFontSize(22).text('INVOICE', 20, y);
+    y += 15;
+    doc.setFontSize(12).text('From:', `${document.getElementById('inv-from').value}`, 20, y);
+    y += 7;
+    doc.text(to: `${document.getElementById('inv-to').value}`, 20, y);
+    y += 15;
+    doc.text('Qty', 120, y);
+    doc.text('Price', 150, y);
+    doc.text('Total', 180, y);
+    y += 5;
+    doc.line(20, y, 190, y);
+    y += 7;
+    document.getElementById('inv-items').value.split('\n').forEach(line => {
+        const [item, qty, price] = line.split(';');
+        if (!item && !qty && !price) return
+        const lineTotal = parseInt(qty) * parseFloat(price);
+        doc.text(item, 20, y);
+        doc.text(qty, 120, y);
+        doc.text(`$${price}`, 150, y);
+        doc.text(`$${lineTotal.toFixed(2)}`, 180, y);
+        y += 7;
+        total += lineTotal;
+    });
+    doc.line(20, y, 190, y);
+    y += 10;
+    doc.setFontSize(16).text('Total:', `${total.toFixed(2)}`, 140, y);
+    doc.save('invoice.pdf');
+});  
+  document.getElementById('bname-generate-btn').addEventListener('click', () => {
+    const k = document.getElementById('bname-keyword').value;
+    const p = ['Creative', 'Apex', 'Digital', 'Quantum', 'Stellar', 'Zenith'];
+    const s = ['Solutions', 'Labs', 'Works', 'Group', 'Ventures', 'Dynamics'];
+    if (k) showResult('bname-output', `<p>${randItem(p)} ${k} ${randItem(s)}</p><p>${k} ${randItem(s)}</p><p>${randItem(p)} ${k}</p>`);
+});
+
+document.getElementById('lottery-generate-btn').addEventListener('click', () => {
+    const c = parseInt(document.getElementById('lottery-count').value),
+        m = parseInt(document.getElementById('lottery-max').value);
+    let nums = new Set();
+    while (nums.size < c) nums.add(Math.ceil(Math.random() * m));
+    showResult('lottery-output', `<p class="display-4">${[...nums].join(' ')}</p>`);
+});
+
+document.getElementById('rand-generate-btn').addEventListener('click', () => {
+    const min = parseInt(document.getElementById('rand-min').value),
+        max = parseInt(document.getElementById('rand-max').value);
+    const num = Math.floor(Math.random() * (max - min + 1)) + min;
+    showResult('rand-output', `<p class="display-4">${num}</p>`);
+});
+
+document.getElementById('plot-generate-btn').addEventListener('click', () => {
+    const c = ['A determined detective', 'A reluctant hero', 'A curious scientist'];
+    const s = ['in a futuristic city', 'in a forgotten kingdom', 'on a distant planet'];
+    const p = ['must uncover a conspiracy', 'has to master a new power', 'must solve an ancient mystery'];
+    showResult('plot-output', `<p>${randItem(c)} who ${randItem(s)} ${randItem(p)}.</p>`);
+});
+
+document.getElementById('fake-addr-btn').addEventListener('click', () => {
+    const st = ['Main', 'Oak', 'Pine', 'Maple'];
+    const city = ['Springfield', 'Fairview', 'Rivertown'];
+    showResult('fake-addr-output', `<p>${Math.floor(Math.random()*2000)} ${randItem(st)} St, ${randItem(city)}, CA ${Math.floor(Math.random()*90000)+10000}</p>`);
+});
+  const coin = document.getElementById('coin'),
+    coinOut = document.getElementById('coin-output');
+document.getElementById('coin-container').addEventListener('click', () => {
+    coin.classList.add('flip');
+    setTimeout(() => {
+        const res = Math.random() < 0.5 ? 'Heads' : 'Tails';
+        coin.src = `https://via.placeholder.com/150?text=${res}`;
+        coinOut.textContent = res;
+        coin.classList.remove('flip');
+    }, 250);
+});
+
+const dice = document.getElementById('dice'),
+    diceOut = document.getElementById('dice-output');
+document.getElementById('dice-container').addEventListener('click', () => {
+    const res = Math.ceil(Math.random() * 6);
+    dice.style.transform = `rotate(${Math.random()*720}deg)`;
+    dice.className = `bi bi-dice-${res}-fill`;
+    diceOut.textContent = `You rolled a ${res}`;
+});
+
+
+const plannerList = document.getElementById('planner-list'),
+    plannerTask = document.getElementById('planner-task');
+document.getElementById('planner-add-btn').addEventListener('click', () => {
+    if (plannerTask.value) {
+        plannerList.innerHTML += `<li class="list-group-item">${plannerTask.value}</li>`;
+        plannerTask.value = '';
+    }
+});
+document.getElementById('planner-print-btn').addEventListener('click', () =>
+    window.print());
+
+
+const inviteOut = document.getElementById('invite-output');
+document.getElementById('invite-generate-btn').addEventListener('click', () => {
+    inviteOut.innerHTML = `<h2>You are invited!</h2><p class="my-4">To celebrate the wedding of</p>
+<h3>${document.getElementById('invite-names').value}</h3><p class="mt-4"><p>${document.getElementById('invite-datetime').value}</p><p>at</p><p>${document.getElementById('invite-venue').value}</p>`;
+    inviteOut.classList.remove('d-none');
+    setTimeout(() => window.print(), 200);
+});
+
+
+document.getElementById('ip-find-btn').addEventListener('click', () => {
+    showResult('ip-output', 'Finding...');
+    fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => showResult('ip-output', `<p>Your IP Address:</p><h4>${d.ip}</h4>`)).catch(() => showResult('ip-output', 'Could not fetch IP'));
+});
+  document.getElementById('elec-calc-btn').addEventListener('click', () => {
+    const
+        kwh = parseFloat(document.getElementById('elec-kwh').value),
+        rate = parseFloat(document.getElementById('elec-rate').value);
+    if (kwh && rate)
+        showResult('elec-output', `<p>Estimated Bill:</p><h4>$${(kwh*rate).toFixed(2)}</h4>`);
+});
+
+document.getElementById('leap-check-btn').addEventListener('click', () => {
+    const
+        y = parseInt(document.getElementById('leap-year').value);
+    if (y) showResult('leap-output', (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0) ? `<h4>${y} is a Leap Year</h4>` : `<h4>${y} is NOT a Leap Year</h4>`);
+});
+
+document.getElementById('num-calc-btn').addEventListener('click', () => {
+    const name = document.getElementById('num-name').value;
+    if (!name) return;
+    const
+        map = {
+            'a': 1, 'j': 1, 's': 1, 'b': 2, 'k': 2, 't': 2, 'c': 3,
+            'l': 3, 'u': 3, 'd': 4, 'm': 4, 'v': 4, 'e': 5, 'n': 5,
+            'w': 5, 'f': 6, 'o': 6, 'x': 6, 'g': 7, 'p': 7, 'y': 7,
+            'h': 8, 'q': 8, 'z': 8, 'i': 9, 'r': 9,
+        };
+    let
+        sum = [...name.toLowerCase()].reduce((acc, c) => acc + (map[c] || 0), 0);
+    while (sum > 9 && sum !== 11 && sum !== 22) {
+        sum = [...sum.toString()].reduce((a, c) => a + parseInt(c), 0);
+    }
+    showResult('num-output', `<p>Your Numerology Number:</p><h4>${sum}</h4>`);
+});
+
+}
+
+// --- STEP 3: Run the functions in the correct order ---
+buildPage();
+attachAllEventListeners();
+
+});
+
+</script>
+
+</body>
+
+</html>
+  
+              
